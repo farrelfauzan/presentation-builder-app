@@ -15,6 +15,10 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
+# Disable Nx daemon for Docker builds
+ENV NX_DAEMON=false
+ENV NX_PARALLEL=1
+
 # Generate Prisma client
 RUN pnpm nx run backend:prisma-generate
 
