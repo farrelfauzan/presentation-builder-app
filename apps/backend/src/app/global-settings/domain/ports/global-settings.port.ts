@@ -1,17 +1,36 @@
 import {
-  CreateGlobalSettingsDto,
   CreateGlobalSettingsResponseDto,
+  CreateGlobalSettingsType,
   GlobalSettingsResponseDto,
-  UpdateGlobalSettingsDto,
   UpdateGlobalSettingsResponseDto,
+  UpdateGlobalSettingsType,
 } from '@presentation-builder-app/libs';
+
+export interface CreateGlobalSettingsData {
+  companyName?: string;
+  logoUrl?: string;
+  address?: string;
+  email?: string;
+  website?: string;
+}
+
+export interface UpdateGlobalSettingsData {
+  companyName?: string;
+  logoUrl?: string;
+  address?: string;
+  email?: string;
+  website?: string;
+}
 
 export interface IGlobalSettingsRepository {
   create(
-    options: CreateGlobalSettingsDto,
+    data: CreateGlobalSettingsType,
   ): Promise<CreateGlobalSettingsResponseDto>;
   get(): Promise<GlobalSettingsResponseDto | null>;
   update(
-    options: UpdateGlobalSettingsDto,
+    id: string,
+    data: UpdateGlobalSettingsType,
   ): Promise<UpdateGlobalSettingsResponseDto>;
 }
+
+export const GLOBAL_SETTINGS_REPOSITORY = Symbol('IGlobalSettingsRepository');
