@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-DOMAINS="farrel-space.online,api.farrel-space.online,storage.farrel-space.online,minio.farrel-space.online"
+DOMAINS="api.farrel-space.online,storage.farrel-space.online,minio.farrel-space.online"
 EMAIL=""  # UPDATE THIS
 STAGING=0 # Set to 1 for testing (to avoid rate limits)
 

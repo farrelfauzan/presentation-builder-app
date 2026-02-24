@@ -68,22 +68,6 @@ services:
     networks:
       - app-network
 
-  # Frontend
-  frontend:
-    build:
-      context: .
-      dockerfile: apps/frontend/Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-    container_name: presentation-frontend
-    restart: unless-stopped
-    environment:
-      NODE_ENV: production
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
   # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
@@ -99,7 +83,6 @@ services:
       - ./docker/certbot/conf:/etc/letsencrypt:ro
     depends_on:
       - backend
-      - frontend
       - minio
     networks:
       - app-network
