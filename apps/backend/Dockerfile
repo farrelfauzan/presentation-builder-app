@@ -8,8 +8,6 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/backend/package.json ./apps/backend/
-COPY libs/package.json ./libs/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile

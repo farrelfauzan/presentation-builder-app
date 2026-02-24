@@ -15,7 +15,10 @@ import {
   MEDIA_FILE_VALIDATION,
 } from '@presentation-builder-app/libs';
 
-@Controller('upload')
+@Controller({
+  version: '1',
+  path: 'upload',
+})
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 

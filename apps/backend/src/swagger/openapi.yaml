@@ -1,0 +1,867 @@
+openapi: 3.0.3
+info:
+  title: Presentation Builder API
+  description: |
+    API for managing presentations, projects, slides, and global settings.
+    
+    ## Base URL
+    All endpoints are prefixed with `/api/v1`
+    
+    ## Response Format
+    All successful responses are wrapped in a `data` property:
+    ```json
+    {
+      "data": { ... }
+    }
+    ```
+    
+    ## Authentication
+    Currently, the API does not require authentication (to be implemented).
+    
+  version: 1.0.0
+  contact:
+    name: API Support
+  license:
+    name: MIT
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Projects
+    description: Project management endpoints
+  - name: Slides
+    description: Slide management endpoints
+  - name: Global Settings
+    description: Global application settings
+  - name: Upload
+    description: File upload endpoints
+
+paths:
+  # Projects
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: List all projects
+      description: Returns a list of all active projects (non-deleted)
+      operationId: findAllProjects
+      responses:
+        '200':
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+    post:
+      tags:
+        - Projects
+      summary: Create a new project
+      description: Creates a new presentation project
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProject'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /projects/{id}:
+    get:
+      tags:
+        - Projects
+      summary: Get a project by ID
+      description: Returns a single project by its ID
+      operationId: findOneProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Projects
+      summary: Update a project
+      description: Updates an existing project
+      operationId: updateProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProject'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Projects
+      summary: Delete a project
+      description: Soft deletes a project and all its slides
+      operationId: deleteProject
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '204':
+          description: Project deleted successfully
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /projects/{id}/presentation:
+    get:
+      tags:
+        - Projects
+      summary: Get project with slides
+      description: Returns a project with all its slides ordered by position
+      operationId: getPresentation
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project with slides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProjectWithSlides'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Slides
+  /slides/project/{projectId}:
+    get:
+      tags:
+        - Slides
+      summary: List slides for a project
+      description: Returns all slides for a specific project, ordered by position
+      operationId: findAllSlides
+      parameters:
+        - $ref: '#/components/parameters/SlideProjectId'
+      responses:
+        '200':
+          description: List of slides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Slide'
+    post:
+      tags:
+        - Slides
+      summary: Create a new slide
+      description: Creates a new slide for a project
+      operationId: createSlide
+      parameters:
+        - $ref: '#/components/parameters/SlideProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSlide'
+      responses:
+        '201':
+          description: Slide created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Slide'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /slides/project/{projectId}/reorder:
+    patch:
+      tags:
+        - Slides
+      summary: Reorder slides
+      description: Reorders slides within a project by providing an array of slide IDs in the desired order
+      operationId: reorderSlides
+      parameters:
+        - $ref: '#/components/parameters/SlideProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderSlides'
+      responses:
+        '200':
+          description: Slides reordered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Slide'
+        '400':
+          description: Invalid slide IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /slides/{id}:
+    get:
+      tags:
+        - Slides
+      summary: Get a slide by ID
+      description: Returns a single slide by its ID
+      operationId: findOneSlide
+      parameters:
+        - $ref: '#/components/parameters/SlideId'
+      responses:
+        '200':
+          description: Slide details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Slide'
+        '404':
+          description: Slide not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Slides
+      summary: Update a slide
+      description: Updates an existing slide
+      operationId: updateSlide
+      parameters:
+        - $ref: '#/components/parameters/SlideId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSlide'
+      responses:
+        '200':
+          description: Slide updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Slide'
+        '404':
+          description: Slide not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Slides
+      summary: Delete a slide
+      description: Soft deletes a slide
+      operationId: deleteSlide
+      parameters:
+        - $ref: '#/components/parameters/SlideId'
+      responses:
+        '204':
+          description: Slide deleted successfully
+        '404':
+          description: Slide not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Global Settings
+  /global-settings:
+    get:
+      tags:
+        - Global Settings
+      summary: Get global settings
+      description: Returns the global application settings
+      operationId: getGlobalSettings
+      responses:
+        '200':
+          description: Global settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GlobalSettings'
+        '404':
+          description: Global settings not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Global Settings
+      summary: Create global settings
+      description: Creates the global application settings (multipart/form-data for logo upload)
+      operationId: createGlobalSettings
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateGlobalSettings'
+      responses:
+        '200':
+          description: Global settings created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GlobalSettings'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Global settings already exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+        - Global Settings
+      summary: Update global settings
+      description: Updates the global application settings (multipart/form-data for logo upload)
+      operationId: updateGlobalSettings
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateGlobalSettings'
+      responses:
+        '200':
+          description: Global settings updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/GlobalSettings'
+        '404':
+          description: Global settings not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Upload
+  /upload:
+    post:
+      tags:
+        - Upload
+      summary: Upload a media file
+      description: |
+        Uploads an image or video file to object storage.
+        
+        **Supported formats:**
+        - Images: JPEG, PNG, GIF, WebP, SVG (max 10MB)
+        - Videos: MP4, WebM, OGG, QuickTime (max 100MB)
+      operationId: uploadMedia
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The media file to upload
+      responses:
+        '201':
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: Invalid file or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  parameters:
+    ProjectId:
+      name: id
+      in: path
+      required: true
+      description: Project CUID
+      schema:
+        type: string
+        pattern: '^c[a-z0-9]{24}$'
+        example: 'clh5qvg0h0000l308gu8s9rlp'
+    SlideProjectId:
+      name: projectId
+      in: path
+      required: true
+      description: Project CUID
+      schema:
+        type: string
+        pattern: '^c[a-z0-9]{24}$'
+        example: 'clh5qvg0h0000l308gu8s9rlp'
+    SlideId:
+      name: id
+      in: path
+      required: true
+      description: Slide CUID
+      schema:
+        type: string
+        pattern: '^c[a-z0-9]{24}$'
+        example: 'clh5qvg0h0001l308gu8s9rlq'
+
+  schemas:
+    # Projects
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier (CUID)
+          example: 'clh5qvg0h0000l308gu8s9rlp'
+        title:
+          type: string
+          description: Project title
+          example: 'My Presentation'
+        description:
+          type: string
+          nullable: true
+          description: Project description
+          example: 'A presentation about our Q4 results'
+        version:
+          type: string
+          nullable: true
+          description: Version string
+          example: '1.0.0'
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required:
+        - id
+        - title
+        - createdAt
+        - updatedAt
+
+    ProjectWithSlides:
+      allOf:
+        - $ref: '#/components/schemas/Project'
+        - type: object
+          properties:
+            slides:
+              type: array
+              items:
+                $ref: '#/components/schemas/Slide'
+
+    CreateProject:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          description: Project title
+          example: 'My Presentation'
+        description:
+          type: string
+          description: Project description
+          example: 'A presentation about our Q4 results'
+        version:
+          type: string
+          description: Version string
+          example: '1.0.0'
+
+    UpdateProject:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          description: Project title
+          example: 'Updated Presentation'
+        description:
+          type: string
+          description: Project description
+          example: 'Updated description'
+        version:
+          type: string
+          description: Version string
+          example: '1.0.1'
+
+    # Slides
+    Slide:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier (CUID)
+          example: 'clh5qvg0h0001l308gu8s9rlq'
+        projectId:
+          type: string
+          description: Parent project ID
+          example: 'clh5qvg0h0000l308gu8s9rlp'
+        order:
+          type: integer
+          minimum: 0
+          description: Slide position in the presentation
+          example: 0
+        textContent:
+          type: string
+          nullable: true
+          description: Slide text content (markdown/HTML)
+          example: '# Welcome\n\nThis is the first slide.'
+        mediaUrl:
+          type: string
+          nullable: true
+          description: URL to slide media (image/video)
+          example: 'https://storage.farrel.space/slides/media/abc123.jpg'
+        mediaType:
+          type: string
+          nullable: true
+          enum:
+            - image
+            - video
+          description: Type of media
+          example: 'image'
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required:
+        - id
+        - projectId
+        - order
+        - createdAt
+        - updatedAt
+
+    CreateSlide:
+      type: object
+      properties:
+        order:
+          type: integer
+          minimum: 0
+          description: Slide position (auto-calculated if not provided)
+          example: 0
+        textContent:
+          type: string
+          description: Slide text content
+          example: '# Welcome\n\nThis is the first slide.'
+        mediaUrl:
+          type: string
+          format: uri
+          description: URL to slide media
+          example: 'https://storage.farrel.space/slides/media/abc123.jpg'
+        mediaType:
+          type: string
+          enum:
+            - image
+            - video
+          description: Type of media
+          example: 'image'
+
+    UpdateSlide:
+      type: object
+      properties:
+        order:
+          type: integer
+          minimum: 0
+          description: Slide position
+          example: 1
+        textContent:
+          type: string
+          description: Slide text content
+          example: '# Updated Content'
+        mediaUrl:
+          type: string
+          format: uri
+          description: URL to slide media
+          example: 'https://storage.farrel.space/slides/media/xyz789.jpg'
+        mediaType:
+          type: string
+          enum:
+            - image
+            - video
+          description: Type of media
+          example: 'image'
+
+    ReorderSlides:
+      type: object
+      required:
+        - slideIds
+      properties:
+        slideIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+          description: Array of slide IDs in the desired order
+          example:
+            - 'clh5qvg0h0003l308gu8s9rls'
+            - 'clh5qvg0h0001l308gu8s9rlq'
+            - 'clh5qvg0h0002l308gu8s9rlr'
+
+    # Global Settings
+    GlobalSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier (CUID)
+          example: 'clh5qvg0h0004l308gu8s9rlt'
+        companyName:
+          type: string
+          nullable: true
+          description: Company name
+          example: 'Acme Corp'
+        logoUrl:
+          type: string
+          nullable: true
+          description: URL to company logo
+          example: 'https://storage.farrel.space/global-settings/logos/logo.png'
+        address:
+          type: string
+          nullable: true
+          description: Company address
+          example: '123 Main St, City, Country'
+        email:
+          type: string
+          nullable: true
+          format: email
+          description: Contact email
+          example: 'contact@acme.com'
+        website:
+          type: string
+          nullable: true
+          description: Company website
+          example: 'https://acme.com'
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required:
+        - id
+        - createdAt
+        - updatedAt
+
+    CreateGlobalSettings:
+      type: object
+      properties:
+        companyName:
+          type: string
+          description: Company name
+          example: 'Acme Corp'
+        logo:
+          type: string
+          format: binary
+          description: Company logo file (image)
+        address:
+          type: string
+          description: Company address
+          example: '123 Main St, City, Country'
+        email:
+          type: string
+          format: email
+          description: Contact email
+          example: 'contact@acme.com'
+        website:
+          type: string
+          description: Company website
+          example: 'https://acme.com'
+
+    UpdateGlobalSettings:
+      type: object
+      properties:
+        companyName:
+          type: string
+          description: Company name
+          example: 'Acme Corp Updated'
+        logo:
+          type: string
+          format: binary
+          description: Company logo file (image)
+        address:
+          type: string
+          description: Company address
+          example: '456 New St, City, Country'
+        email:
+          type: string
+          format: email
+          description: Contact email
+          example: 'new@acme.com'
+        website:
+          type: string
+          description: Company website
+          example: 'https://new.acme.com'
+
+    # Upload
+    UploadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Public URL to the uploaded file
+          example: 'https://storage.farrel.space/slides/media/abc123.jpg'
+        mediaType:
+          type: string
+          nullable: true
+          enum:
+            - image
+            - video
+          description: Detected media type
+          example: 'image'
+      required:
+        - url
+
+    # Error
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: 'Validation failed'
+        error:
+          type: string
+          description: Error type
+          example: 'Bad Request'

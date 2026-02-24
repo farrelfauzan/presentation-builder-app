@@ -1,0 +1,6 @@
+# Ignore certificate files
+conf/*
+www/*
+
+# Keep directory structure
+!.gitkeep
