@@ -20,9 +20,6 @@ ENV NX_DAEMON=false
 ENV NX_PARALLEL=1
 ENV NX_SKIP_NX_CACHE=true
 
-# Generate Prisma client directly
-RUN npx prisma generate --schema=apps/backend/src/app/prisma/schema.prisma
-
 # Build the application
 RUN pnpm nx build backend --configuration=production
 
