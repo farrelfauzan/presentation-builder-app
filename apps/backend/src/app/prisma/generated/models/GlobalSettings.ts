@@ -33,7 +33,7 @@ export type GlobalSettingsMinAggregateOutputType = {
   website: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  deletadAt: Date | null
+  deletedAt: Date | null
 }
 
 export type GlobalSettingsMaxAggregateOutputType = {
@@ -45,7 +45,7 @@ export type GlobalSettingsMaxAggregateOutputType = {
   website: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  deletadAt: Date | null
+  deletedAt: Date | null
 }
 
 export type GlobalSettingsCountAggregateOutputType = {
@@ -57,7 +57,7 @@ export type GlobalSettingsCountAggregateOutputType = {
   website: number
   createdAt: number
   updatedAt: number
-  deletadAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -71,7 +71,7 @@ export type GlobalSettingsMinAggregateInputType = {
   website?: true
   createdAt?: true
   updatedAt?: true
-  deletadAt?: true
+  deletedAt?: true
 }
 
 export type GlobalSettingsMaxAggregateInputType = {
@@ -83,7 +83,7 @@ export type GlobalSettingsMaxAggregateInputType = {
   website?: true
   createdAt?: true
   updatedAt?: true
-  deletadAt?: true
+  deletedAt?: true
 }
 
 export type GlobalSettingsCountAggregateInputType = {
@@ -95,7 +95,7 @@ export type GlobalSettingsCountAggregateInputType = {
   website?: true
   createdAt?: true
   updatedAt?: true
-  deletadAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -180,7 +180,7 @@ export type GlobalSettingsGroupByOutputType = {
   website: string | null
   createdAt: Date
   updatedAt: Date
-  deletadAt: Date | null
+  deletedAt: Date | null
   _count: GlobalSettingsCountAggregateOutputType | null
   _min: GlobalSettingsMinAggregateOutputType | null
   _max: GlobalSettingsMaxAggregateOutputType | null
@@ -213,7 +213,7 @@ export type GlobalSettingsWhereInput = {
   website?: Prisma.StringNullableFilter<"GlobalSettings"> | string | null
   createdAt?: Prisma.DateTimeFilter<"GlobalSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GlobalSettings"> | Date | string
-  deletadAt?: Prisma.DateTimeNullableFilter<"GlobalSettings"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"GlobalSettings"> | Date | string | null
 }
 
 export type GlobalSettingsOrderByWithRelationInput = {
@@ -225,7 +225,7 @@ export type GlobalSettingsOrderByWithRelationInput = {
   website?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletadAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
 export type GlobalSettingsWhereUniqueInput = Prisma.AtLeast<{
@@ -240,7 +240,7 @@ export type GlobalSettingsWhereUniqueInput = Prisma.AtLeast<{
   website?: Prisma.StringNullableFilter<"GlobalSettings"> | string | null
   createdAt?: Prisma.DateTimeFilter<"GlobalSettings"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GlobalSettings"> | Date | string
-  deletadAt?: Prisma.DateTimeNullableFilter<"GlobalSettings"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"GlobalSettings"> | Date | string | null
 }, "id">
 
 export type GlobalSettingsOrderByWithAggregationInput = {
@@ -252,7 +252,7 @@ export type GlobalSettingsOrderByWithAggregationInput = {
   website?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletadAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.GlobalSettingsCountOrderByAggregateInput
   _max?: Prisma.GlobalSettingsMaxOrderByAggregateInput
   _min?: Prisma.GlobalSettingsMinOrderByAggregateInput
@@ -270,7 +270,7 @@ export type GlobalSettingsScalarWhereWithAggregatesInput = {
   website?: Prisma.StringNullableWithAggregatesFilter<"GlobalSettings"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GlobalSettings"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GlobalSettings"> | Date | string
-  deletadAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GlobalSettings"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"GlobalSettings"> | Date | string | null
 }
 
 export type GlobalSettingsCreateInput = {
@@ -282,7 +282,7 @@ export type GlobalSettingsCreateInput = {
   website?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletadAt?: Date | string | null
+  deletedAt?: Date | string | null
 }
 
 export type GlobalSettingsUncheckedCreateInput = {
@@ -294,7 +294,7 @@ export type GlobalSettingsUncheckedCreateInput = {
   website?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletadAt?: Date | string | null
+  deletedAt?: Date | string | null
 }
 
 export type GlobalSettingsUpdateInput = {
@@ -306,7 +306,7 @@ export type GlobalSettingsUpdateInput = {
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type GlobalSettingsUncheckedUpdateInput = {
@@ -318,7 +318,7 @@ export type GlobalSettingsUncheckedUpdateInput = {
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type GlobalSettingsCreateManyInput = {
@@ -330,7 +330,7 @@ export type GlobalSettingsCreateManyInput = {
   website?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletadAt?: Date | string | null
+  deletedAt?: Date | string | null
 }
 
 export type GlobalSettingsUpdateManyMutationInput = {
@@ -342,7 +342,7 @@ export type GlobalSettingsUpdateManyMutationInput = {
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type GlobalSettingsUncheckedUpdateManyInput = {
@@ -354,7 +354,7 @@ export type GlobalSettingsUncheckedUpdateManyInput = {
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type GlobalSettingsCountOrderByAggregateInput = {
@@ -366,7 +366,7 @@ export type GlobalSettingsCountOrderByAggregateInput = {
   website?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletadAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type GlobalSettingsMaxOrderByAggregateInput = {
@@ -378,7 +378,7 @@ export type GlobalSettingsMaxOrderByAggregateInput = {
   website?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletadAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type GlobalSettingsMinOrderByAggregateInput = {
@@ -390,7 +390,7 @@ export type GlobalSettingsMinOrderByAggregateInput = {
   website?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletadAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -420,7 +420,7 @@ export type GlobalSettingsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   website?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletadAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["globalSettings"]>
 
 export type GlobalSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -432,7 +432,7 @@ export type GlobalSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   website?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletadAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["globalSettings"]>
 
 export type GlobalSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -444,7 +444,7 @@ export type GlobalSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   website?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletadAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["globalSettings"]>
 
 export type GlobalSettingsSelectScalar = {
@@ -456,10 +456,10 @@ export type GlobalSettingsSelectScalar = {
   website?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletadAt?: boolean
+  deletedAt?: boolean
 }
 
-export type GlobalSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "logoUrl" | "address" | "email" | "website" | "createdAt" | "updatedAt" | "deletadAt", ExtArgs["result"]["globalSettings"]>
+export type GlobalSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "logoUrl" | "address" | "email" | "website" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["globalSettings"]>
 
 export type $GlobalSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "GlobalSettings"
@@ -473,7 +473,7 @@ export type $GlobalSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     website: string | null
     createdAt: Date
     updatedAt: Date
-    deletadAt: Date | null
+    deletedAt: Date | null
   }, ExtArgs["result"]["globalSettings"]>
   composites: {}
 }
@@ -905,7 +905,7 @@ export interface GlobalSettingsFieldRefs {
   readonly website: Prisma.FieldRef<"GlobalSettings", 'String'>
   readonly createdAt: Prisma.FieldRef<"GlobalSettings", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GlobalSettings", 'DateTime'>
-  readonly deletadAt: Prisma.FieldRef<"GlobalSettings", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"GlobalSettings", 'DateTime'>
 }
     
 
