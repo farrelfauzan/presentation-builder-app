@@ -1,26 +1,105 @@
-import { Injectable } from '@nestjs/common';
-import { CreateGlobalSettingDto } from './dto/create-global-setting.dto';
-import { UpdateGlobalSettingDto } from './dto/update-global-setting.dto';
+import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  CreateGlobalSettingsDto,
+  CreateGlobalSettingsResponseDto,
+  GlobalSettingsResponseDto,
+  UpdateGlobalSettingsDto,
+  UpdateGlobalSettingsResponseDto,
+  IUploadedFile,
+  getFileExtension,
+} from '@presentation-builder-app/libs';
+import {
+  IGlobalSettingsRepository,
+  GLOBAL_SETTINGS_REPOSITORY,
+} from './domain/ports/global-settings.port';
+import { MinioService } from '../minio/minio.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class GlobalSettingsService {
-  create(createGlobalSettingDto: CreateGlobalSettingDto) {
-    return 'This action adds a new globalSetting';
+  private readonly LOGO_PATH = 'global-settings/logos';
+
+  constructor(
+    @Inject(GLOBAL_SETTINGS_REPOSITORY)
+    private readonly repository: IGlobalSettingsRepository,
+    private readonly minioService: MinioService,
+  ) {}
+
+  async create(
+    dto: CreateGlobalSettingsDto,
+    logoFile?: IUploadedFile,
+  ): Promise<CreateGlobalSettingsResponseDto> {
+    let logoUrl: string | undefined;
+
+    if (logoFile) {
+      logoUrl = await this.uploadLogo(logoFile);
+    }
+
+    return this.repository.create({
+      companyName: dto.companyName,
+      logoUrl,
+      address: dto.address,
+      email: dto.email,
+      website: dto.website,
+    });
   }
 
-  findAll() {
-    return `This action returns all globalSettings`;
+  async get(): Promise<GlobalSettingsResponseDto> {
+    const settings = await this.repository.get();
+    if (!settings) {
+      throw new HttpException(
+        'Global settings not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return settings;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} globalSetting`;
+  async update(
+    dto: UpdateGlobalSettingsDto,
+    logoFile?: IUploadedFile,
+  ): Promise<UpdateGlobalSettingsResponseDto> {
+    const existingSettings = await this.repository.get();
+    if (!existingSettings) {
+      throw new HttpException(
+        'Global settings not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    let logoUrl: string | undefined;
+
+    if (logoFile) {
+      // Delete old logo if exists
+      if (existingSettings.logoUrl) {
+        try {
+          await this.minioService.deleteFile(existingSettings.logoUrl);
+        } catch {
+          // Ignore delete errors for old file
+        }
+      }
+      logoUrl = await this.uploadLogo(logoFile);
+    }
+
+    return this.repository.update(existingSettings.id, {
+      companyName: dto.companyName,
+      logoUrl,
+      address: dto.address,
+      email: dto.email,
+      website: dto.website,
+    });
   }
 
-  update(id: number, updateGlobalSettingDto: UpdateGlobalSettingDto) {
-    return `This action updates a #${id} globalSetting`;
-  }
+  private async uploadLogo(file: IUploadedFile): Promise<string> {
+    const ext = getFileExtension(file.filename);
+    const objectName = `${this.LOGO_PATH}/${uuidv4()}${ext}`;
 
-  remove(id: number) {
-    return `This action removes a #${id} globalSetting`;
+    const result = await this.minioService.uploadBuffer(
+      file.buffer,
+      objectName,
+      { 'Content-Type': file.mimetype },
+    );
+
+    return result.url;
   }
 }
