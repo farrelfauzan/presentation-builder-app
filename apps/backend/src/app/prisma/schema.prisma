@@ -6,12 +6,13 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
 }
+
 model GlobalSettings {
   id          String  @id @default(cuid())
   companyName String? @map("company_name")
@@ -21,7 +22,7 @@ model GlobalSettings {
   website     String?
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
-  deletadAt   DateTime? @map("deleted_at") @db.Timestamptz()
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz()
 
   @@map("global_settings")
 }

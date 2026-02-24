@@ -5,12 +5,12 @@ import * as dotenv from 'dotenv';
 import { defineConfig } from 'prisma/config';
 
 // Load .env from workspace root
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
 
 export default defineConfig({
-  schema: 'prisma/schema.prisma',
+  schema: 'schema.prisma',
   migrations: {
-    path: 'prisma/migrations',
+    path: 'migrations',
   },
   datasource: {
     url: process.env['DATABASE_URL'],

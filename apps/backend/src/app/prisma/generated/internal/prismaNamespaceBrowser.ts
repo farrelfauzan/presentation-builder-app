@@ -81,7 +81,7 @@ export const GlobalSettingsScalarFieldEnum = {
   website: 'website',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletadAt: 'deletadAt'
+  deletedAt: 'deletedAt'
 } as const
 
 export type GlobalSettingsScalarFieldEnum = (typeof GlobalSettingsScalarFieldEnum)[keyof typeof GlobalSettingsScalarFieldEnum]
