@@ -17,4 +17,18 @@ import * as Prisma from './internal/prismaNamespaceBrowser.js'
 export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
-
+/**
+ * Model GlobalSettings
+ * 
+ */
+export type GlobalSettings = Prisma.GlobalSettingsModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel
+/**
+ * Model Slide
+ * 
+ */
+export type Slide = Prisma.SlideModel

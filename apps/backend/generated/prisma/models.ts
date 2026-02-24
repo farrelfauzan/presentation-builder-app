@@ -8,4 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/GlobalSettings.js'
+export type * from './models/Project.js'
+export type * from './models/Slide.js'
 export type * from './commonInputTypes.js'

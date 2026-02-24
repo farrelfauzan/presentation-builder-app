@@ -12,3 +12,50 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+model GlobalSettings {
+  id          String  @id @default(cuid())
+  companyName String? @map("company_name")
+  logoUrl     String? @map("logo_url")
+  address     String?
+  email       String?
+  website     String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  deletadAt   DateTime? @map("deleted_at") @db.Timestamptz()
+
+  @@map("global_settings")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  version     String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz()
+  slides      Slide[]
+
+  @@map("projects")
+}
+
+model Slide {
+  id          String    @id @default(cuid())
+  projectId   String    @map("project_id")
+  order       Int
+  textContent String? @map("text_content")
+  mediaUrl    String? @map("media_url")
+  mediaType   MediaType? @map("media_type")
+  project     Project   @relation(fields: [projectId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz()
+
+  @@index([projectId, order])
+  @@map("slides")
+}
+
+enum MediaType {
+  image
+  video
+}
