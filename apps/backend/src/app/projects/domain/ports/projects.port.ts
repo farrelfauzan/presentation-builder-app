@@ -1,19 +1,21 @@
 import {
-  CreateProjectDto,
+  CreateProjectType,
   CreateProjectResponseDto,
-  GetProjectDto,
   ProjectResponseDto,
-  UpdateProjectDto,
+  UpdateProjectType,
   UpdateProjectResponseDto,
 } from '@presentation-builder-app/libs';
 
 export interface IProjectsRepository {
-  create(options: CreateProjectDto): Promise<CreateProjectResponseDto>;
+  create(data: CreateProjectType): Promise<CreateProjectResponseDto>;
   findAll(): Promise<ProjectResponseDto[]>;
-  findOne(options: GetProjectDto): Promise<ProjectResponseDto | null>;
+  findOne(id: string): Promise<ProjectResponseDto | null>;
+  findOneWithSlides(id: string): Promise<ProjectResponseDto | null>;
   update(
     id: string,
-    options: UpdateProjectDto,
+    data: UpdateProjectType,
   ): Promise<UpdateProjectResponseDto>;
   remove(id: string): Promise<void>;
 }
+
+export const PROJECTS_REPOSITORY = Symbol('IProjectsRepository');

@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  CreateProjectDto,
+  CreateProjectResponseDto,
+  ProjectResponseDto,
+  UpdateProjectDto,
+  UpdateProjectResponseDto,
+} from '@presentation-builder-app/libs';
+import {
+  IProjectsRepository,
+  PROJECTS_REPOSITORY,
+} from './domain/ports/projects.port';
 
 @Injectable()
 export class ProjectsService {
-  create(createProjectDto: CreateProjectDto) {
-    return 'This action adds a new project';
+  constructor(
+    @Inject(PROJECTS_REPOSITORY)
+    private readonly repository: IProjectsRepository,
+  ) {}
+
+  async create(dto: CreateProjectDto): Promise<CreateProjectResponseDto> {
+    return this.repository.create({
+      title: dto.title,
+      description: dto.description,
+      version: dto.version,
+    });
   }
 
-  findAll() {
-    return `This action returns all projects`;
+  async findAll(): Promise<ProjectResponseDto[]> {
+    return this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  async findOne(id: string): Promise<ProjectResponseDto> {
+    const project = await this.repository.findOne(id);
+    if (!project) {
+      throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
+    }
+    return project;
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async findOneWithSlides(id: string): Promise<ProjectResponseDto> {
+    const project = await this.repository.findOneWithSlides(id);
+    if (!project) {
+      throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
+    }
+    return project;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async update(
+    id: string,
+    dto: UpdateProjectDto,
+  ): Promise<UpdateProjectResponseDto> {
+    return this.repository.update(id, {
+      title: dto.title,
+      description: dto.description,
+      version: dto.version,
+    });
+  }
+
+  async remove(id: string): Promise<void> {
+    return this.repository.remove(id);
   }
 }
