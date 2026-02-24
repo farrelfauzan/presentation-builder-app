@@ -3,40 +3,62 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import {
+  CreateProjectDto,
+  UpdateProjectDto,
+} from '@presentation-builder-app/libs';
 
-@Controller('projects')
+@Controller({
+  version: '1',
+  path: 'projects',
+})
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
-    return this.projectsService.create(createProjectDto);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createProjectDto: CreateProjectDto) {
+    const data = await this.projectsService.create(createProjectDto);
+    return { data };
   }
 
   @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  async findAll() {
+    const data = await this.projectsService.findAll();
+    return { data };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const data = await this.projectsService.findOne(id);
+    return { data };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
+  @Get(':id/presentation')
+  async getPresentation(@Param('id') id: string) {
+    const data = await this.projectsService.findOneWithSlides(id);
+    return { data };
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ) {
+    const data = await this.projectsService.update(id, updateProjectDto);
+    return { data };
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+    return this.projectsService.remove(id);
   }
 }
