@@ -38,3 +38,20 @@ export const IMAGE_FILE_VALIDATION: IFileValidationOptions = {
     'image/svg+xml',
   ],
 };
+
+export const MEDIA_FILE_VALIDATION: IFileValidationOptions = {
+  maxSize: 100 * 1024 * 1024, // 100MB
+  allowedMimeTypes: [
+    // Images
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/svg+xml',
+    // Videos
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime',
+  ],
+};
