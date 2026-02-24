@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSlideDto } from './dto/create-slide.dto';
-import { UpdateSlideDto } from './dto/update-slide.dto';
+import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  CreateSlideDto,
+  CreateSlideResponseDto,
+  SlideResponseDto,
+  UpdateSlideDto,
+  UpdateSlideResponseDto,
+} from '@presentation-builder-app/libs';
+import {
+  ISlidesRepository,
+  SLIDES_REPOSITORY,
+} from './domain/ports/slides.port';
 
 @Injectable()
 export class SlidesService {
-  create(createSlideDto: CreateSlideDto) {
-    return 'This action adds a new slide';
+  constructor(
+    @Inject(SLIDES_REPOSITORY)
+    private readonly repository: ISlidesRepository,
+  ) {}
+
+  async create(
+    projectId: string,
+    dto: CreateSlideDto,
+  ): Promise<CreateSlideResponseDto> {
+    // Auto-calculate order if not provided
+    const order = dto.order ?? (await this.repository.getNextOrder(projectId));
+
+    return this.repository.create({
+      projectId,
+      order,
+      textContent: dto.textContent,
+      mediaUrl: dto.mediaUrl,
+      mediaType: dto.mediaType,
+    });
   }
 
-  findAll() {
-    return `This action returns all slides`;
+  async findAllByProject(projectId: string): Promise<SlideResponseDto[]> {
+    return this.repository.findAllByProject(projectId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} slide`;
+  async findOne(id: string): Promise<SlideResponseDto> {
+    const slide = await this.repository.findOne(id);
+    if (!slide) {
+      throw new HttpException('Slide not found', HttpStatus.NOT_FOUND);
+    }
+    return slide;
   }
 
-  update(id: number, updateSlideDto: UpdateSlideDto) {
-    return `This action updates a #${id} slide`;
+  async update(
+    id: string,
+    dto: UpdateSlideDto,
+  ): Promise<UpdateSlideResponseDto> {
+    return this.repository.update(id, {
+      order: dto.order,
+      textContent: dto.textContent,
+      mediaUrl: dto.mediaUrl,
+      mediaType: dto.mediaType,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} slide`;
+  async remove(id: string): Promise<void> {
+    return this.repository.remove(id);
+  }
+
+  async reorder(
+    projectId: string,
+    slideIds: string[],
+  ): Promise<SlideResponseDto[]> {
+    return this.repository.reorder(projectId, slideIds);
   }
 }
