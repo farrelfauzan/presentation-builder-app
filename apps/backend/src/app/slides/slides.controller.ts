@@ -72,6 +72,8 @@ export class SlidesController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.slidesService.remove(id);
+    const data = this.slidesService.remove(id);
+
+    return { data };
   }
 }

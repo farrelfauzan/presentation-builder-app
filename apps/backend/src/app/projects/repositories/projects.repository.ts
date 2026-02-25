@@ -100,7 +100,9 @@ export class ProjectsRepository implements IProjectsRepository {
     return updatedProject as unknown as UpdateProjectResponseDto;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<{
+    data: { message: string };
+  }> {
     const existingProject = await this.prisma.findFirstActive<Project>(
       this.prisma.project,
       {
@@ -113,15 +115,18 @@ export class ProjectsRepository implements IProjectsRepository {
     }
 
     // Soft delete the project
-    await this.prisma.project.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+    await this.prisma.softDelete<Project>(this.prisma.project, { id });
 
     // Soft delete all slides belonging to this project
     await this.prisma.slide.updateMany({
       where: { projectId: id, deletedAt: null },
       data: { deletedAt: new Date() },
     });
+
+    return {
+      data: {
+        message: 'Project deleted successfully',
+      },
+    };
   }
 }

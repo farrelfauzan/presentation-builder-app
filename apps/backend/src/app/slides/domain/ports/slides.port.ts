@@ -11,7 +11,11 @@ export interface ISlidesRepository {
   findAllByProject(projectId: string): Promise<SlideResponseDto[]>;
   findOne(id: string): Promise<SlideResponseDto | null>;
   update(id: string, data: UpdateSlideType): Promise<UpdateSlideResponseDto>;
-  remove(id: string): Promise<void>;
+  remove(id: string): Promise<{
+    data: {
+      message: string;
+    };
+  }>;
   reorder(projectId: string, slideIds: string[]): Promise<SlideResponseDto[]>;
   getNextOrder(projectId: string): Promise<number>;
 }

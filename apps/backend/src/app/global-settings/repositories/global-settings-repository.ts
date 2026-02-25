@@ -56,8 +56,6 @@ export class GlobalSettingsRepository implements IGlobalSettingsRepository {
       },
     );
 
-    console.log('Fetched global settings:', globalSettings);
-
     if (!globalSettings) {
       return null;
     }
