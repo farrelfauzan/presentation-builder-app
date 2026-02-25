@@ -57,7 +57,11 @@ export class ProjectsService {
     });
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<{
+    data: {
+      message: string;
+    };
+  }> {
     return this.repository.remove(id);
   }
 }

@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "jsx": "preserve",
 
     "strict": true,
@@ -16,19 +17,26 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@presentation-builder-app/libs": ["../../libs/src/index.ts"],
+      "@presentation-builder-app/libs/components": ["../../libs/src/components/index.ts"],
+      "@presentation-builder-app/libs/components/ui": ["../../libs/src/components/ui/index.ts"],
+      "@presentation-builder-app/libs/utils": ["../../libs/src/utils/index.ts"],
+      "@presentation-builder-app/libs/hooks": ["../../libs/src/hooks/index.ts"],
+      "@/*": ["./src/*"]
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-
     "../../apps/frontend/.next/types/**/*.ts",
     "../../dist/apps/frontend/.next/types/**/*.ts",
     "../../libs/**/*.ts",
     "next-env.d.ts"
-  ],
+, "../../libs/src/components/ui/index.tsx"  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",

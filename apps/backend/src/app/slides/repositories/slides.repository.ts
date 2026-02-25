@@ -86,7 +86,11 @@ export class SlidesRepository implements ISlidesRepository {
     return updatedSlide as unknown as UpdateSlideResponseDto;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<{
+    data: {
+      message: string;
+    };
+  }> {
     const existingSlide = await this.prisma.findFirstActive<Slide>(
       this.prisma.slide,
       {
@@ -99,10 +103,13 @@ export class SlidesRepository implements ISlidesRepository {
     }
 
     // Soft delete the slide
-    await this.prisma.slide.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+    await this.prisma.softDelete<Slide>(this.prisma.slide, { id });
+
+    return {
+      data: {
+        message: 'Slide deleted successfully',
+      },
+    };
   }
 
   async reorder(

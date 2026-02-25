@@ -6,9 +6,13 @@
     "types": ["node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "target": "es2021"
+    "target": "es2021",
+    "baseUrl": "../..",
+    "paths": {
+      "@presentation-builder-app/libs": ["libs/src/server.ts"]
+    }
   },
-  "include": ["src/**/*.ts", "../../libs/**/*.ts"],
+  "include": ["src/**/*.ts", "../../libs/src/zod-dtos/**/*.ts", "../../libs/src/interfaces/**/*.ts", "../../libs/src/utils/**/*.ts"],
   "exclude": [
     "jest.config.ts",
     "jest.config.cts",

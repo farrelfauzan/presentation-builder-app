@@ -15,7 +15,11 @@ export interface IProjectsRepository {
     id: string,
     data: UpdateProjectType,
   ): Promise<UpdateProjectResponseDto>;
-  remove(id: string): Promise<void>;
+  remove(id: string): Promise<{
+    data: {
+      message: string;
+    };
+  }>;
 }
 
 export const PROJECTS_REPOSITORY = Symbol('IProjectsRepository');

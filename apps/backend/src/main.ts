@@ -19,7 +19,15 @@ async function bootstrap(): Promise<NestFastifyApplication> {
     new FastifyAdapter({
       bodyLimit: 10 * 1024 * 1024, // 10 MB
     }),
-    { cors: true, logger: ['debug', 'error', 'log', 'warn', 'verbose'] },
+    {
+      cors: {
+        origin: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
+      },
+      logger: ['debug', 'error', 'log', 'warn', 'verbose'],
+    },
   );
 
   await app.register(multipart, {
