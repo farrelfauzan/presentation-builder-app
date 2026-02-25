@@ -28,7 +28,7 @@
     "../../dist/apps/frontend/.next/types/**/*.ts",
     "../../libs/**/*.ts",
     "next-env.d.ts"
-  ],
+, "../../libs/src/components/ui/index.tsx"  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
