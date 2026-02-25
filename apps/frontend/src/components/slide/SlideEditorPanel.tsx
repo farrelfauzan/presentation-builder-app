@@ -1,4 +1,4 @@
-'use client';
+  'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import {
@@ -59,8 +59,8 @@ export function SlideEditorPanel({
         id: slide.id,
         data: {
           textContent: textContent || undefined,
-          mediaUrl: mediaUrl || undefined,
-          mediaType: mediaType || undefined,
+          mediaUrl: mediaUrl ?? null,
+          mediaType: mediaType ?? null,
         },
       });
       // Reset form to saved values
