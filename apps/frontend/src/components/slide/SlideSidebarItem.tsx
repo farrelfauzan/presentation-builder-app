@@ -4,7 +4,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@presentation-builder-app/libs';
 import { GripVertical, Image, Type, FileText } from 'lucide-react';
-import type { Slide } from '../../lib/api';
+import type { Slide } from '@/lib/api';
 
 interface SlideSidebarItemProps {
   slide: Slide;

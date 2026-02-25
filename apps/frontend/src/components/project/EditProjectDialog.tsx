@@ -14,8 +14,8 @@ import {
   Textarea,
 } from '@presentation-builder-app/libs';
 import { toast } from 'sonner';
-import { useUpdateProject } from '../../lib/hooks';
-import type { Project } from '../../lib/api';
+import { useUpdateProject } from '@/lib/hooks';
+import type { Project } from '@/lib/api';
 import { Loader2, Save } from 'lucide-react';
 
 interface EditProjectDialogProps {

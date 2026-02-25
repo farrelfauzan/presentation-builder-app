@@ -2,7 +2,7 @@
 
 import { cn } from '@presentation-builder-app/libs';
 import { Type, Image as ImageIcon } from 'lucide-react';
-import type { Slide } from '../../lib/api';
+import type { Slide } from '@/lib/api';
 
 interface SlideCanvasProps {
   slide: Slide | null;

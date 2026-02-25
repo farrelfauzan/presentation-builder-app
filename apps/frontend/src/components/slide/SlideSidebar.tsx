@@ -17,9 +17,9 @@ import {
 } from '@dnd-kit/sortable';
 import { Button, ScrollArea } from '@presentation-builder-app/libs';
 import { Plus } from 'lucide-react';
-import { SlideSidebarItem } from './SlideSidebarItem';
-import { SlideListLoading } from '../shared/LoadingState';
-import type { Slide } from '../../lib/api';
+import { SlideSidebarItem } from '@/components/slide/SlideSidebarItem';
+import { SlideListLoading } from '@/components/shared/LoadingState';
+import type { Slide } from '@/lib/api';
 
 interface SlideSidebarProps {
   slides: Slide[];

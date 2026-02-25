@@ -11,8 +11,8 @@ import {
   AlertDialogAction,
 } from '@presentation-builder-app/libs';
 import { toast } from 'sonner';
-import { useDeleteProject } from '../../lib/hooks';
-import type { Project } from '../../lib/api';
+import { useDeleteProject } from '@/lib/hooks';
+import type { Project } from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 
 interface DeleteProjectDialogProps {

@@ -9,7 +9,7 @@ import {
   projectApi,
   type CreateProjectPayload,
   type UpdateProjectPayload,
-} from '../api';
+} from '@/lib/api';
 
 export const projectKeys = {
   all: 'projects' as const,

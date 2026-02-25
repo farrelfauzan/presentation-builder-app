@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'motion/react';
-import type { Slide, GlobalSettings } from '../../lib/api';
+import type { Slide, GlobalSettings } from '@/lib/api';
 
 interface PresentationSlideProps {
   slide: Slide;

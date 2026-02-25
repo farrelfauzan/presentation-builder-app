@@ -5,7 +5,7 @@ import {
   useApiMutation,
   STALE_TIMES,
 } from '@presentation-builder-app/libs';
-import { settingsApi } from '../api';
+import { settingsApi } from '@/lib/api';
 
 export const settingsKeys = {
   all: 'global-settings' as const,

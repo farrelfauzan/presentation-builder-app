@@ -10,7 +10,7 @@ import {
   type CreateSlidePayload,
   type UpdateSlidePayload,
   type ReorderSlidesPayload,
-} from '../api';
+} from '@/lib/api';
 
 export const slideKeys = {
   all: (projectId: string): [string, string] => ['slides', projectId],

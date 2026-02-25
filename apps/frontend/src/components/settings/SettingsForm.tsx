@@ -12,9 +12,9 @@ import {
   useGlobalSettings,
   useCreateSettings,
   useUpdateSettings,
-} from '../../lib/hooks';
+} from '@/lib/hooks';
 import { Save, Upload, Loader2, X } from 'lucide-react';
-import type { GlobalSettings } from '../../lib/api';
+import type { GlobalSettings } from '@/lib/api';
 
 export function SettingsForm() {
   const { data: settings, isLoading } = useGlobalSettings();

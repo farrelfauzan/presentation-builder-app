@@ -22,7 +22,7 @@ import {
   FolderOpen,
   Play,
 } from 'lucide-react';
-import type { Project } from '../../lib/api';
+import type { Project } from '@/lib/api';
 
 interface ProjectCardProps {
   project: Project;

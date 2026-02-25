@@ -9,8 +9,8 @@ import {
 } from '@presentation-builder-app/libs';
 import { toast } from 'sonner';
 import { Upload, X, Save, Trash2, Loader2 } from 'lucide-react';
-import { useUpdateSlide, useDeleteSlide, useUploadMedia } from '../../lib/hooks';
-import type { Slide } from '../../lib/api';
+import { useUpdateSlide, useDeleteSlide, useUploadMedia } from '@/lib/hooks';
+import type { Slide } from '@/lib/api';
 
 interface SlideEditorPanelProps {
   slide: Slide | null;
@@ -55,7 +55,7 @@ export function SlideEditorPanel({
 
   const handleSave = async () => {
     try {
-      await updateSlide.mutateAsync({
+      const updated = await updateSlide.mutateAsync({
         id: slide.id,
         data: {
           textContent: textContent || undefined,
@@ -63,6 +63,10 @@ export function SlideEditorPanel({
           mediaType: mediaType || undefined,
         },
       });
+      // Reset form to saved values
+      setTextContent(updated.textContent || '');
+      setMediaUrl(updated.mediaUrl ?? null);
+      setMediaType(updated.mediaType ?? null);
       setIsDirty(false);
       toast.success('Slide saved');
     } catch {

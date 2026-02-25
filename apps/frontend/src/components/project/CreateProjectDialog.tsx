@@ -14,7 +14,7 @@ import {
   Textarea,
 } from '@presentation-builder-app/libs';
 import { toast } from 'sonner';
-import { useCreateProject } from '../../lib/hooks';
+import { useCreateProject } from '@/lib/hooks';
 import { Loader2, Plus } from 'lucide-react';
 
 interface CreateProjectDialogProps {
