@@ -65,6 +65,24 @@ export class MinioService implements OnModuleInit {
         await this.client.makeBucket(this.bucketName);
         this.logger.log(`Bucket "${this.bucketName}" created`);
       }
+
+      // Set public read policy so the browser can fetch media directly
+      const policy = {
+        Version: '2012-10-17',
+        Statement: [
+          {
+            Effect: 'Allow',
+            Principal: { AWS: ['*'] },
+            Action: ['s3:GetObject'],
+            Resource: [`arn:aws:s3:::${this.bucketName}/*`],
+          },
+        ],
+      };
+      await this.client.setBucketPolicy(
+        this.bucketName,
+        JSON.stringify(policy),
+      );
+      this.logger.log(`Public read policy set for bucket "${this.bucketName}"`);
     } catch (error) {
       this.logger.error(`Failed to ensure bucket exists: ${error}`);
       throw error;
