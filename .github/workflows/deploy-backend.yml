@@ -1,0 +1,58 @@
+name: Deploy Backend to VPS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/backend/**'
+      - 'libs/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'docker-compose.prod.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: "."
+          target: "~/presentation-builder-app"
+          overwrite: true
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd ~/presentation-builder-app
+            export TERM=xterm-256color
+
+            # Stop only backend, nginx, certbot (keep postgres & minio running)
+            docker compose -f docker-compose.prod.yml stop backend nginx certbot
+
+            # Rebuild backend
+            docker compose -f docker-compose.prod.yml build --no-cache backend
+
+            # Start backend, nginx, certbot back up
+            docker compose -f docker-compose.prod.yml up -d backend nginx certbot
+
+            # Run database migrations
+            docker exec presentation-backend npx prisma migrate deploy --schema ./prisma/schema.prisma || true
+
+            # Verify backend is running
+            docker ps | grep presentation-backend
+
+            echo "Backend deployed successfully!"
