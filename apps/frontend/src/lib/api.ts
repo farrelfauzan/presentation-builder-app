@@ -91,8 +91,8 @@ export interface CreateSlidePayload {
 export interface UpdateSlidePayload {
   order?: number;
   textContent?: string;
-  mediaUrl?: string;
-  mediaType?: 'image' | 'video';
+  mediaUrl?: string | null;
+  mediaType?: 'image' | 'video' | null;
 }
 
 export interface ReorderSlidesPayload {

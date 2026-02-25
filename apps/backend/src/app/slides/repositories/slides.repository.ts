@@ -78,8 +78,12 @@ export class SlidesRepository implements ISlidesRepository {
       data: {
         order: data.order ?? existingSlide.order,
         textContent: data.textContent ?? existingSlide.textContent,
-        mediaUrl: data.mediaUrl ?? existingSlide.mediaUrl,
-        mediaType: data.mediaType ?? existingSlide.mediaType,
+        mediaUrl:
+          data.mediaUrl !== undefined ? data.mediaUrl : existingSlide.mediaUrl,
+        mediaType:
+          data.mediaType !== undefined
+            ? data.mediaType
+            : existingSlide.mediaType,
       },
     });
 
