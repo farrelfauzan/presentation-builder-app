@@ -52,7 +52,7 @@ jobs:
             # Wait for postgres to be healthy
             echo "Waiting for postgres to be ready..."
             for i in $(seq 1 30); do
-              if docker exec presentation-db pg_isready -U presentation_user -d presentation_builder > /dev/null 2>&1; then
+              if docker exec presentation-db pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} > /dev/null 2>&1; then
                 echo "Postgres is ready!"
                 break
               fi
@@ -61,7 +61,7 @@ jobs:
             done
 
             # Run database migrations
-            docker exec -i presentation-db psql -U presentation_user -d presentation_builder <<'EOF'
+            docker exec -i presentation-db psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} <<'EOF'
             CREATE TYPE "MediaType" AS ENUM ('image', 'video');
 
             CREATE TABLE IF NOT EXISTS "global_settings" (
