@@ -36,18 +36,19 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
+          command_timeout: 30m
           script: |
             cd ~/presentation-builder-app
             export TERM=xterm-256color
 
-            # Tear down all containers and volumes
-            docker compose -f docker-compose.prod.yml down -v
+            # Stop containers (keep volumes to preserve DB data)
+            docker compose -f docker-compose.prod.yml down
 
-            # Clean up all images and cache
-            docker system prune -af
-
-            # Rebuild and start everything
+            # Rebuild and start everything (uses layer cache for speed)
             docker compose -f docker-compose.prod.yml up -d --build
+
+            # Clean up dangling images only (not all cache)
+            docker image prune -f
 
             # Wait for postgres to be healthy
             echo "Waiting for postgres to be ready..."
