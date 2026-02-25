@@ -90,7 +90,6 @@ export class SlidesRepository implements ISlidesRepository {
     return updatedSlide as unknown as UpdateSlideResponseDto;
   }
 
-  // Soft delete by setting deletedAt timestamp
   async remove(id: string): Promise<{
     data: {
       message: string;
