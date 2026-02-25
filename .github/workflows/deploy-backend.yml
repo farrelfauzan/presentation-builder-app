@@ -40,19 +40,73 @@ jobs:
             cd ~/presentation-builder-app
             export TERM=xterm-256color
 
-            # Stop only backend, nginx, certbot (keep postgres & minio running)
-            docker compose -f docker-compose.prod.yml stop backend nginx certbot
+            # Tear down all containers and volumes
+            docker compose -f docker-compose.prod.yml down -v
 
-            # Rebuild backend
-            docker compose -f docker-compose.prod.yml build --no-cache backend
+            # Clean up all images and cache
+            docker system prune -af
 
-            # Start backend, nginx, certbot back up
-            docker compose -f docker-compose.prod.yml up -d backend nginx certbot
+            # Rebuild and start everything
+            docker compose -f docker-compose.prod.yml up -d --build
+
+            # Wait for postgres to be healthy
+            echo "Waiting for postgres to be ready..."
+            for i in $(seq 1 30); do
+              if docker exec presentation-db pg_isready -U presentation_user -d presentation_builder > /dev/null 2>&1; then
+                echo "Postgres is ready!"
+                break
+              fi
+              echo "Waiting... ($i/30)"
+              sleep 2
+            done
 
             # Run database migrations
-            docker exec presentation-backend npx prisma migrate deploy --schema ./prisma/schema.prisma || true
+            docker exec -i presentation-db psql -U presentation_user -d presentation_builder <<'EOF'
+            CREATE TYPE "MediaType" AS ENUM ('image', 'video');
 
-            # Verify backend is running
-            docker ps | grep presentation-backend
+            CREATE TABLE IF NOT EXISTS "global_settings" (
+                "id" TEXT NOT NULL,
+                "company_name" TEXT,
+                "logo_url" TEXT,
+                "address" TEXT,
+                "email" TEXT,
+                "website" TEXT,
+                "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                "updated_at" TIMESTAMPTZ NOT NULL,
+                "deleted_at" TIMESTAMPTZ,
+                CONSTRAINT "global_settings_pkey" PRIMARY KEY ("id")
+            );
+
+            CREATE TABLE IF NOT EXISTS "projects" (
+                "id" TEXT NOT NULL,
+                "title" TEXT NOT NULL,
+                "description" TEXT,
+                "version" TEXT,
+                "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                "updated_at" TIMESTAMPTZ NOT NULL,
+                "deleted_at" TIMESTAMPTZ,
+                CONSTRAINT "projects_pkey" PRIMARY KEY ("id")
+            );
+
+            CREATE TABLE IF NOT EXISTS "slides" (
+                "id" TEXT NOT NULL,
+                "project_id" TEXT NOT NULL,
+                "order" INTEGER NOT NULL,
+                "text_content" TEXT,
+                "media_url" TEXT,
+                "media_type" "MediaType",
+                "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                "updated_at" TIMESTAMPTZ NOT NULL,
+                "deleted_at" TIMESTAMPTZ,
+                CONSTRAINT "slides_pkey" PRIMARY KEY ("id")
+            );
+
+            CREATE INDEX IF NOT EXISTS "slides_project_id_order_idx" ON "slides"("project_id", "order");
+
+            ALTER TABLE "slides" ADD CONSTRAINT "slides_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+            EOF
+
+            # Verify all containers are running
+            docker ps
 
             echo "Backend deployed successfully!"
