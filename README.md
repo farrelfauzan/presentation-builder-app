@@ -134,11 +134,7 @@ MINIO_ACCESS_KEY=minioadmin
 MINIO_SECRET_KEY=minioadmin
 MINIO_BUCKET_NAME=presentation-builder
 MINIO_PUBLIC_URL=http://localhost:9000
-```
 
-Create `apps/frontend/.env.local`:
-
-```env
 NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
 ```
 
