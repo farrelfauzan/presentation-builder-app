@@ -1,8 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { useApiMutation } from '@presentation-builder-app/libs';
 import { uploadApi } from '@/lib/api';
 
 export function useUploadMedia() {
-  return useApiMutation((file: File) => uploadApi.upload(file));
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const mutation = useApiMutation((file: File) => {
+    setUploadProgress(0);
+    return uploadApi.presignAndUpload(file, setUploadProgress);
+  });
+
+  return { ...mutation, uploadProgress };
 }

@@ -175,6 +175,36 @@ export class MinioService implements OnModuleInit {
     );
   }
 
+  /**
+   * Returns a presigned PUT URL with the internal MinIO host replaced by
+   * the externally-accessible public URL so the browser can upload directly.
+   */
+  async getPublicPresignedPutUrl(
+    objectName: string,
+    expirySeconds: number = 3600,
+  ): Promise<string> {
+    const raw = await this.client.presignedPutObject(
+      this.bucketName,
+      objectName,
+      expirySeconds,
+    );
+
+    // In production the client endpoint is the internal Docker hostname
+    // (e.g. minio:9000). We need to rewrite it so the browser can reach MinIO.
+    const configuredPublicUrl =
+      this.configService.get<string>('MINIO_PUBLIC_URL');
+    if (!configuredPublicUrl) return raw;
+
+    const rawUrl = new URL(raw);
+    const publicBase = new URL(configuredPublicUrl);
+    rawUrl.protocol = publicBase.protocol;
+    rawUrl.hostname = publicBase.hostname;
+    rawUrl.port = publicBase.port ?? '';
+    // Remove the bucket prefix that publicBase already includes in its path
+    // because presignedPutObject already embeds /<bucket>/<objectName>
+    return rawUrl.toString();
+  }
+
   async fileExists(objectName: string): Promise<boolean> {
     try {
       await this.client.statObject(this.bucketName, objectName);

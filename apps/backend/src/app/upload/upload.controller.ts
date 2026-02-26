@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Body,
   Req,
   HttpException,
   HttpStatus,
@@ -21,6 +22,30 @@ import {
 })
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
+
+  @Post('presign')
+  @HttpCode(HttpStatus.OK)
+  async presign(@Body() body: { filename: string; contentType: string }) {
+    if (!body?.filename || !body?.contentType) {
+      throw new HttpException(
+        'filename and contentType are required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const result = await this.uploadService.getPresignedUploadUrl(
+      body.filename,
+      body.contentType,
+    );
+
+    return {
+      data: {
+        presignedUrl: result.presignedUrl,
+        publicUrl: result.publicUrl,
+        mediaType: result.mediaType,
+      },
+    };
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

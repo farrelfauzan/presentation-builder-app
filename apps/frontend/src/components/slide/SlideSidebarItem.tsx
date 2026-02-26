@@ -21,8 +21,8 @@ function getSlideIcon(slide: Slide) {
 
 function getSlideLabel(slide: Slide) {
   if (slide.textContent) {
-    return slide.textContent.length > 30
-      ? slide.textContent.slice(0, 30) + '...'
+    return slide.textContent.length > 15
+      ? slide.textContent.slice(0, 15) + '...'
       : slide.textContent;
   }
   if (slide.mediaUrl) return 'Media Slide';
