@@ -31,7 +31,7 @@ export function SlideEditorPanel({
 
   const updateSlide = useUpdateSlide(projectId);
   const deleteSlide = useDeleteSlide(projectId);
-  const uploadMedia = useUploadMedia();
+  const { mutateAsync: uploadMediaAsync, isPending: isUploading, uploadProgress } = useUploadMedia();
 
   // Sync state when active slide changes
   useEffect(() => {
@@ -79,7 +79,7 @@ export function SlideEditorPanel({
     if (!file) return;
 
     try {
-      const result = await uploadMedia.mutateAsync(file);
+      const result = await uploadMediaAsync(file);
       setMediaUrl(result.url);
       setMediaType(result.mediaType as 'image' | 'video');
       setIsDirty(true);
@@ -144,18 +144,18 @@ export function SlideEditorPanel({
 
           {mediaUrl ? (
             <div className="space-y-2">
-              <div className="relative rounded-md border overflow-hidden">
+              <div className="relative rounded-md border overflow-hidden bg-black/5">
                 {mediaType === 'video' ? (
                   <video
                     src={mediaUrl}
                     controls
-                    className="w-full max-h-40 object-cover"
+                    className="w-full max-h-64 object-contain"
                   />
                 ) : (
                   <img
                     src={mediaUrl}
                     alt="Slide media"
-                    className="w-full max-h-40 object-cover"
+                    className="w-full max-h-64 object-contain"
                   />
                 )}
               </div>
@@ -183,15 +183,23 @@ export function SlideEditorPanel({
                 size="sm"
                 className="w-full"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={uploadMedia.isPending}
+                disabled={isUploading}
               >
-                {uploadMedia.isPending ? (
+                {isUploading ? (
                   <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
                 ) : (
                   <Upload className="mr-2 h-3.5 w-3.5" />
                 )}
-                Upload Media
+                {isUploading ? `Uploading… ${uploadProgress}%` : 'Upload Media'}
               </Button>
+              {isUploading && uploadProgress > 0 && (
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -162,7 +162,14 @@ export interface UploadResponse {
   mediaType?: string;
 }
 
+export interface PresignResponse {
+  presignedUrl: string;
+  publicUrl: string;
+  mediaType: 'image' | 'video' | null;
+}
+
 export const uploadApi = {
+  /** Legacy buffered upload — kept for non-video use cases. */
   upload: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -171,5 +178,45 @@ export const uploadApi = {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then((r) => r.data);
+  },
+
+  /**
+   * Fast direct upload:
+   * 1. Ask the backend for a presigned MinIO PUT URL.
+   * 2. PUT the file straight to MinIO from the browser — no backend buffering.
+   */
+  presignAndUpload: async (
+    file: File,
+    onProgress?: (percent: number) => void,
+  ): Promise<UploadResponse> => {
+    // Step 1 – get presigned URL
+    const { presignedUrl, publicUrl, mediaType } = await apiClient
+      .post<PresignResponse>('/upload/presign', {
+        filename: file.name,
+        contentType: file.type,
+      })
+      .then((r) => r.data);
+
+    // Step 2 – upload directly to MinIO with XHR so we can track progress
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', presignedUrl, true);
+      xhr.setRequestHeader('Content-Type', file.type);
+      if (onProgress) {
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            onProgress(Math.round((e.loaded / e.total) * 100));
+          }
+        };
+      }
+      xhr.onload = () =>
+        xhr.status >= 200 && xhr.status < 300
+          ? resolve()
+          : reject(new Error(`MinIO upload failed: ${xhr.status}`));
+      xhr.onerror = () => reject(new Error('Network error during upload'));
+      xhr.send(file);
+    });
+
+    return { url: publicUrl, mediaType: mediaType ?? undefined };
   },
 };
