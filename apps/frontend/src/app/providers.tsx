@@ -16,13 +16,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
             retry: 1,
           },
         },
-      })
+      }),
   );
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <Toaster richColors closeButton position="top-right" />
+      <Toaster
+        richColors
+        closeButton
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#15803D',
+            color: '#FFFFFF',
+          },
+        }}
+      />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

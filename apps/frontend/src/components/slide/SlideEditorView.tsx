@@ -105,7 +105,7 @@ export function SlideEditorView({ projectId }: SlideEditorViewProps) {
               Back
             </Link>
           </Button>
-          <div>
+          <div className='flex flex-row items-center gap-2'>
             <h2 className="text-sm font-semibold">{project.title}</h2>
             {project.version && (
               <span className="text-xs text-muted-foreground">
