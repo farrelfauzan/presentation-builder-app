@@ -58,7 +58,7 @@ export function SlideEditorPanel({
       const updated = await updateSlide.mutateAsync({
         id: slide.id,
         data: {
-          textContent: textContent || undefined,
+          textContent: textContent || null,
           mediaUrl: mediaUrl ?? null,
           mediaType: mediaType ?? null,
         },
