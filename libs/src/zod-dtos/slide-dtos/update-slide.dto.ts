@@ -4,7 +4,7 @@ import { mediaTypeEnum } from './create-slide.dto';
 
 export const updateSlideDto = z.object({
   order: z.number().int().min(0).optional(),
-  textContent: z.string().optional(),
+  textContent: z.string().nullable().optional(),
   mediaUrl: z.url().nullable().optional(),
   mediaType: mediaTypeEnum.nullable().optional(),
 });

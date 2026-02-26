@@ -24,7 +24,7 @@ export const DEFAULT_FILE_VALIDATION: IFileValidationOptions = {
 };
 
 export const VIDEO_FILE_VALIDATION: IFileValidationOptions = {
-  maxSize: 100 * 1024 * 1024, // 100MB
+  maxSize: 500 * 1024 * 1024, // 500MB
   allowedMimeTypes: ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'],
 };
 
@@ -40,7 +40,7 @@ export const IMAGE_FILE_VALIDATION: IFileValidationOptions = {
 };
 
 export const MEDIA_FILE_VALIDATION: IFileValidationOptions = {
-  maxSize: 100 * 1024 * 1024, // 100MB
+  maxSize: 500 * 1024 * 1024, // 500MB
   allowedMimeTypes: [
     // Images
     'image/jpeg',

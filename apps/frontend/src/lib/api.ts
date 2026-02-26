@@ -90,7 +90,7 @@ export interface CreateSlidePayload {
 
 export interface UpdateSlidePayload {
   order?: number;
-  textContent?: string;
+  textContent?: string | null;
   mediaUrl?: string | null;
   mediaType?: 'image' | 'video' | null;
 }

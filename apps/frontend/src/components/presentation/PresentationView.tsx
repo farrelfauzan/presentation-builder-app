@@ -86,6 +86,8 @@ export function PresentationView({ projectId }: PresentationViewProps) {
           slide={currentSlide}
           direction={direction}
           projectTitle={project.title}
+          projectDescription={project.description}
+          projectVersion={project.version}
           globalSettings={globalSettings}
           isFirstSlide={currentIndex === 0}
         />

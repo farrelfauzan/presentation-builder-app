@@ -17,7 +17,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
-      bodyLimit: 10 * 1024 * 1024, // 10 MB
+      bodyLimit: 500 * 1024 * 1024, // 500 MB
     }),
     {
       cors: {
@@ -32,7 +32,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
 
   await app.register(multipart, {
     limits: {
-      fileSize: 5 * 1024 * 1024, // 5 MB
+      fileSize: 500 * 1024 * 1024, // 500 MB
     },
   });
 

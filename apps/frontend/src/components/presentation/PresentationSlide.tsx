@@ -1,12 +1,15 @@
 'use client';
 
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import type { Slide, GlobalSettings } from '@/lib/api';
+import { RenderSlideContent } from './RenderSlideContent';
 
 interface PresentationSlideProps {
   slide: Slide;
-  direction: number; // 1 = forward, -1 = backward
+  direction: number;
   projectTitle?: string;
+  projectDescription?: string | null;
+  projectVersion?: string | null;
   globalSettings?: GlobalSettings | null;
   isFirstSlide?: boolean;
 }
@@ -35,6 +38,8 @@ export function PresentationSlide({
   slide,
   direction,
   projectTitle,
+  projectDescription,
+  projectVersion,
   globalSettings,
   isFirstSlide,
 }: PresentationSlideProps) {
@@ -50,109 +55,86 @@ export function PresentationSlide({
       animate="center"
       exit="exit"
       transition={transition}
-      className="absolute inset-0 flex items-center justify-center"
+      className="absolute inset-0 flex flex-col"
     >
-      {/* First slide: show project info + settings */}
       {isFirstSlide && (
-        <div className="absolute top-8 left-8 right-8 flex items-start justify-between">
-          {globalSettings?.logoUrl && (
-            <img
-              src={globalSettings.logoUrl}
-              alt={globalSettings.companyName || 'Logo'}
-              className="h-12 w-auto object-contain"
-            />
-          )}
-          {globalSettings?.companyName && (
-            <span className="text-sm text-white/60 font-medium">
-              {globalSettings.companyName}
-            </span>
-          )}
+        <div className="shrink-0 px-8 pt-8">
+          <div className="flex flex-row items-start justify-between mb-4">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {globalSettings?.logoUrl && (
+                <img
+                  src={globalSettings.logoUrl}
+                  alt={globalSettings.companyName || 'Logo'}
+                  className="h-12 w-auto object-contain"
+                />
+              )}
+              {globalSettings?.companyName && (
+                <span className="text-sm text-white/80 font-semibold truncate">
+                  {globalSettings.companyName}
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-row items-center gap-3 text-sm text-white/60">
+              {globalSettings?.address && (
+                <span>{globalSettings.address}</span>
+              )}
+              {globalSettings?.address && (globalSettings?.email || globalSettings?.website) && (
+                <span>•</span>
+              )}
+              {globalSettings?.email && (
+                <a
+                  href={`mailto:${globalSettings.email}`}
+                  className="hover:text-white/90 underline transition-colors"
+                >
+                  {globalSettings.email}
+                </a>
+              )}
+              {globalSettings?.email && globalSettings?.website && (
+                <span>•</span>
+              )}
+              {globalSettings?.website && (
+                <a
+                  href={
+                    globalSettings.website.startsWith('http')
+                      ? globalSettings.website
+                      : `https://${globalSettings.website}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white/90 underline transition-colors"
+                >
+                  {globalSettings.website}
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="text-center border-t border-white/10 pt-4">
+            {projectTitle && (
+              <h1 className="text-3xl font-bold text-white mb-1">
+                {projectTitle}
+              </h1>
+            )}
+            <div className="flex items-center justify-center gap-3">
+              {projectDescription && (
+                <p className="text-sm text-white/60 max-w-2xl">
+                  {projectDescription}
+                </p>
+              )}
+              {projectVersion && (
+                <span className="inline-block text-xs text-white/40 bg-white/10 px-2 py-0.5 rounded-full">
+                  v{projectVersion}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Content rendering based on layout logic */}
-      {renderSlideContent(slide, hasText, hasMedia)}
-
-      {/* First slide project title overlay */}
-      {isFirstSlide && projectTitle && !hasText && !hasMedia && (
-        <div className="text-center px-12">
-          <h1 className="text-5xl font-bold text-white mb-4">
-            {projectTitle}
-          </h1>
-          {globalSettings?.companyName && (
-            <p className="text-xl text-white/70">{globalSettings.companyName}</p>
-          )}
-        </div>
-      )}
+      <div className="flex-1 flex items-center justify-center relative min-h-0 overflow-hidden">
+        <RenderSlideContent slide={slide} hasText={hasText} hasMedia={hasMedia} />
+      </div>
     </motion.div>
   );
-}
-
-function renderSlideContent(
-  slide: Slide,
-  hasText: boolean,
-  hasMedia: boolean
-) {
-  // Text only
-  if (hasText && !hasMedia) {
-    return (
-      <div className="flex items-center justify-center w-full h-full px-16">
-        <p className="text-3xl font-medium text-white leading-relaxed text-center whitespace-pre-wrap max-w-4xl">
-          {slide.textContent}
-        </p>
-      </div>
-    );
-  }
-
-  // Media only
-  if (!hasText && hasMedia) {
-    return (
-      <div className="flex items-center justify-center w-full h-full p-8">
-        {slide.mediaType === 'video' ? (
-          <video
-            src={slide.mediaUrl!}
-            controls
-            autoPlay
-            className="max-h-full max-w-full rounded-lg object-contain"
-          />
-        ) : (
-          <img
-            src={slide.mediaUrl!}
-            alt="Slide"
-            className="max-h-full max-w-full rounded-lg object-contain"
-          />
-        )}
-      </div>
-    );
-  }
-
-  // Text + Media (split)
-  if (hasText && hasMedia) {
-    return (
-      <div className="flex items-stretch w-full h-full">
-        <div className="flex w-1/2 items-center justify-center px-12">
-          <p className="text-2xl font-medium text-white leading-relaxed whitespace-pre-wrap">
-            {slide.textContent}
-          </p>
-        </div>
-        <div className="flex w-1/2 items-center justify-center p-8">
-          {slide.mediaType === 'video' ? (
-            <video
-              src={slide.mediaUrl!}
-              controls
-              className="max-h-full max-w-full rounded-lg object-contain"
-            />
-          ) : (
-            <img
-              src={slide.mediaUrl!}
-              alt="Slide"
-              className="max-h-full max-w-full rounded-lg object-contain"
-            />
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return null;
 }

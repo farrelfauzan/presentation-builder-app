@@ -77,7 +77,10 @@ export class SlidesRepository implements ISlidesRepository {
       where: { id },
       data: {
         order: data.order ?? existingSlide.order,
-        textContent: data.textContent ?? existingSlide.textContent,
+        textContent:
+          data.textContent !== undefined
+            ? data.textContent
+            : existingSlide.textContent,
         mediaUrl:
           data.mediaUrl !== undefined ? data.mediaUrl : existingSlide.mediaUrl,
         mediaType:
