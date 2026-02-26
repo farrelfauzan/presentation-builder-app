@@ -9,7 +9,7 @@ export function useUploadMedia() {
 
   const mutation = useApiMutation((file: File) => {
     setUploadProgress(0);
-    return uploadApi.presignAndUpload(file, setUploadProgress);
+    return uploadApi.upload(file, setUploadProgress);
   });
 
   return { ...mutation, uploadProgress };

@@ -169,13 +169,20 @@ export interface PresignResponse {
 }
 
 export const uploadApi = {
-  /** Legacy buffered upload — kept for non-video use cases. */
-  upload: (file: File) => {
+  /** Buffered upload through backend → MinIO (works reliably, supports progress). */
+  upload: (file: File, onProgress?: (percent: number) => void) => {
     const formData = new FormData();
     formData.append('file', file);
     return apiClient
       .post<UploadResponse>('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: onProgress
+          ? (e) => {
+              if (e.total) {
+                onProgress(Math.round((e.loaded / e.total) * 100));
+              }
+            }
+          : undefined,
       })
       .then((r) => r.data);
   },
