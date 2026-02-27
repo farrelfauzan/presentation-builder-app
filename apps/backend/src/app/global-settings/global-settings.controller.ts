@@ -77,6 +77,8 @@ export class GlobalSettingsController {
       }
     }
 
+    const deleteLogo = fields.deleteLogo === 'true';
+
     const dto = {
       companyName: fields.companyName,
       address: fields.address,
@@ -84,7 +86,7 @@ export class GlobalSettingsController {
       website: fields.website,
     };
 
-    const data = await this.globalSettingsService.update(dto, file);
+    const data = await this.globalSettingsService.update(dto, file, deleteLogo);
     return { data };
   }
 }

@@ -58,6 +58,7 @@ export class GlobalSettingsService {
   async update(
     dto: UpdateGlobalSettingsDto,
     logoFile?: IUploadedFile,
+    deleteLogo = false,
   ): Promise<UpdateGlobalSettingsResponseDto> {
     const existingSettings = await this.repository.get();
     if (!existingSettings) {
@@ -67,7 +68,7 @@ export class GlobalSettingsService {
       );
     }
 
-    let logoUrl: string | undefined;
+    let logoUrl: string | undefined | null;
 
     if (logoFile) {
       // Delete old logo if exists
@@ -79,6 +80,16 @@ export class GlobalSettingsService {
         }
       }
       logoUrl = await this.uploadLogo(logoFile);
+    } else if (deleteLogo) {
+      // User explicitly removed the logo
+      if (existingSettings.logoUrl) {
+        try {
+          await this.minioService.deleteFile(existingSettings.logoUrl);
+        } catch {
+          // Ignore delete errors for old file
+        }
+      }
+      logoUrl = null;
     }
 
     return this.repository.update(existingSettings.id, {

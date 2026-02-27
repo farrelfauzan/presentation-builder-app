@@ -3,7 +3,7 @@ import { createZodDto } from 'nestjs-zod';
 
 export const updateGlobalSettingsDto = z.object({
   companyName: z.string().optional(),
-  logoUrl: z.string().optional(),
+  logoUrl: z.string().nullable().optional(),
   address: z.string().optional(),
   email: z
     .email({

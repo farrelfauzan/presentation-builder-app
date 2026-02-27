@@ -62,7 +62,11 @@ export function SettingsForm() {
     if (address.trim()) formData.append('address', address.trim());
     if (email.trim()) formData.append('email', email.trim());
     if (website.trim()) formData.append('website', website.trim());
-    if (logoFile) formData.append('logo', logoFile);
+    if (logoFile) {
+      formData.append('logo', logoFile);
+    } else if (!logoUrl && hasExisting && settings?.logoUrl) {
+      formData.append('deleteLogo', 'true');
+    }
 
     try {
       if (hasExisting) {
