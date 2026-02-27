@@ -88,7 +88,8 @@ export class GlobalSettingsRepository implements IGlobalSettingsRepository {
       where: { id },
       data: {
         companyName: data.companyName ?? existingSettings.companyName,
-        logoUrl: data.logoUrl ?? existingSettings.logoUrl,
+        logoUrl:
+          data.logoUrl !== undefined ? data.logoUrl : existingSettings.logoUrl,
         address: data.address ?? existingSettings.address,
         email: data.email ?? existingSettings.email,
         website: data.website ?? existingSettings.website,
